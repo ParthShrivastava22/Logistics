@@ -1,17 +1,17 @@
-// db.js (demo mode using mongodb-memory-server)
-const { MongoMemoryServer } = require("mongodb-memory-server");
+// Load models FIRST
+require("../models/user.model"); // Import User model
+require("../models/driver.model"); // Import Driver model if needed
+require("../models/delivery.model");
+
 const mongoose = require("mongoose");
 
-async function connectToDb() {
-  if (process.env.DEMO_MODE === "true") {
-    const mongod = await MongoMemoryServer.create();
-    const uri = mongod.getUri();
-    await mongoose.connect(uri);
-    console.log("Connected to in-memory MongoDB (demo mode)");
-  } else {
-    await mongoose.connect(process.env.DB_CONNECT);
-    console.log("Connected to DB");
-  }
+function connectToDb() {
+  mongoose
+    .connect(process.env.DB_CONNECT)
+    .then(() => {
+      console.log("Connected to DB");
+    })
+    .catch((err) => console.log(err));
 }
 
 module.exports = connectToDb;
